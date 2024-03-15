@@ -1,77 +1,115 @@
-class Account:
-    def __init__(self, account_number, pin, balance=0.0):
-        self.account_number = account_number
+class User:
+    def __init__(self, user_id, pin):
+        self.user_id = user_id
         self.pin = pin
+    
+    def authenticate_user(self):
+        # Authenticates the user based on user ID and pin
+        # For simplicity, let's just print a message indicating successful authentication
+        print("User authenticated successfully.")
+
+
+class ATM:
+    def __init__(self, user, balance):
+        self.user = user
         self.balance = balance
-
-    def validate_pin(self, entered_pin):
-        return self.pin == entered_pin
-
-    def withdraw(self, amount):
-        if amount > self.balance:
-            return "Insufficient funds"
-        self.balance -= amount
-        return f"Withdrawal successful! New balance: {self.balance:.2f}"
-
-    def deposit(self, amount):
-        self.balance += amount
-        return f"Deposit successful! New balance: {self.balance:.2f}"
-
-    def get_balance(self):
-        return f"Your current balance is: {self.balance:.2f}"
-
-# Sample accounts (replace with database or file-based storage)
-accounts = {
-    123456: Account(123456, 1234, 1000.00)
-}
-
-def login():
-    account_number = int(input("Enter your account number: "))
-    if account_number not in accounts:
-        return None  # Account not found
-
-    pin = int(input("Enter your PIN: "))
-    account = accounts[account_number]
-    if not account.validate_pin(pin):
-        return None  # Invalid PIN
-
-    return account
-
-def main():
-    print("Welcome to My Bank  ATM!")
-
-    while True:
-        account = login()
-        if not account:
-            print("Invalid account number or PIN. Please try again.")
-            continue
-
-        print("\nATM Menu:")
-        print("1. Check Balance")
-        print("2. Withdraw Cash")
-        print("3. Deposit Cash")
-        print("4. Transfer Funds")
-        print("5. Exit")
-
-        choice = input("Enter your choice (1-5): ")
-
+    
+    def display_menu(self):
+        # Displays the menu options to the user
+        print("ATM Menu:")
+        print("1. Withdraw")
+        print("2. Deposit")
+        print("3. Transfer")
+    
+    def perform_transaction(self):
+        # Performs the selected transaction based on user input
+        choice = input("Enter your choice (1 for Withdraw, 2 for Deposit, 3 for Transfer): ")
         if choice == '1':
-            print(account.get_balance())
+            withdrawal_amount = float(input("Enter withdrawal amount: "))
+            withdraw = Withdraw(withdrawal_amount)
+            withdraw.perform_withdrawal()
         elif choice == '2':
-            amount = float(input("Enter amount to withdraw: "))
-            print(account.withdraw(amount))
+            deposit_amount = float(input("Enter deposit amount: "))
+            deposit = Deposit(deposit_amount)
+            deposit.perform_deposit()
         elif choice == '3':
-            amount = float(input("Enter amount to deposit: "))
-            print(account.deposit(amount))
-        elif choice == '4':
-            # Transfer functionality (not implemented in this basic example)
-            print("Transfer functionality is not available in this basic version.")
-        elif choice == '5':
-            print("Thank you for using our ATM. Have a nice day!")
-            break
+            recipient = input("Enter recipient's user ID: ")
+            transfer_amount = float(input("Enter transfer amount: "))
+            transfer = Transfer(recipient, transfer_amount)
+            transfer.perform_transfer()
         else:
-            print("Invalid choice. Please try again.")
+            print("Invalid choice.")
 
-if __name__ == "__main__":
-    main()
+
+class TransactionHistory:
+    def __init__(self):
+        self.history_list = []
+    
+    def add_transaction(self, transaction):
+        # Adds a transaction to the history list
+        self.history_list.append(transaction)
+    
+    def get_transaction_history(self):
+        # Retrieves the transaction history
+        return self.history_list
+
+
+class Withdraw:
+    def __init__(self, amount):
+        self.amount = amount
+    
+    def validate_withdrawal(self):
+        # Validates if the withdrawal amount is valid
+        # For simplicity, let's assume all withdrawals are valid
+        return True
+    
+    def perform_withdrawal(self):
+        # Performs the withdrawal transaction
+        if self.validate_withdrawal():
+            print(f"Withdrawal of ${self.amount} successful.")
+        else:
+            print("Withdrawal failed.")
+
+
+class Deposit:
+    def __init__(self, amount):
+        self.amount = amount
+    
+    def validate_deposit(self):
+        # Validates if the deposit amount is valid
+        # For simplicity, let's assume all deposits are valid
+        return True
+    
+    def perform_deposit(self):
+        # Performs the deposit transaction
+        if self.validate_deposit():
+            print(f"Deposit of ${self.amount} successful.")
+        else:
+            print("Deposit failed.")
+
+
+class Transfer:
+    def __init__(self, recipient, amount):
+        self.recipient = recipient
+        self.amount = amount
+    
+    def validate_transfer(self):
+        # Validates if the transfer amount and recipient are valid
+        # For simplicity, let's assume all transfers are valid
+        return True
+    
+    def perform_transfer(self):
+        # Performs the transfer transaction
+        if self.validate_transfer():
+            print(f"Transfer of ${self.amount} to {self.recipient} successful.")
+        else:
+            print("Transfer failed.")
+
+
+# Example usage:
+user1 = User("12345", "6789")
+atm = ATM(user1, 1000)
+atm.display_menu()
+atm.perform_transaction()
+
 
